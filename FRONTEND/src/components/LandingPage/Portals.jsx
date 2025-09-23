@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- SVG Icons for this section (Updated for color consistency) ---
 const StudentIcon = () => (
@@ -36,88 +37,118 @@ const UniversitiesIcon = () => (
 
 
 // --- Reusable PortalCard component (with hover effect) ---
-const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlaceholder, passPlaceholder, previewData }) => (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-shadow duration-300 hover:shadow-xl">
-        <div className="p-8">
-            <div className="flex items-center gap-4 mb-4">
-                {icon}
-                <div>
-                    <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
-                    <p className="text-gray-500">{description}</p>
+const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlaceholder, passPlaceholder, previewData, onLogin }) => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (onLogin) {
+            onLogin();
+        }
+    };
+
+    return (
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-shadow duration-300 hover:shadow-xl">
+            <div className="p-8">
+                <div className="flex items-center gap-4 mb-4">
+                    {icon}
+                    <div>
+                        <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
+                        <p className="text-gray-500">{description}</p>
+                    </div>
+                </div>
+                <form className="space-y-4 mt-6" onSubmit={handleSubmit}>
+                    <input type="text" placeholder={idPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
+                    <input type="password" placeholder={passPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
+                    <button type="submit" className={`${buttonColor} w-full text-white py-3 rounded-lg font-bold text-lg hover:bg-[#246494] transition-colors`}>
+                        {buttonText}
+                    </button>
+                </form>
+            </div>
+            <div className="bg-gray-50 p-6 border-t mt-auto">
+                <h4 className="font-bold text-gray-700 mb-2">{title} Preview</h4>
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    {previewData.map(item => (
+                        <div key={item.label} className="flex items-center gap-2">
+                            {item.icon}
+                            <span>{item.label}: <span className="font-semibold">{item.value}</span></span>
+                        </div>
+                    ))}
                 </div>
             </div>
-            <form className="space-y-4 mt-6">
-                <input type="text" placeholder={idPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
-                <input type="password" placeholder={passPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
-                <button type="submit" className={`${buttonColor} w-full text-white py-3 rounded-lg font-bold text-lg hover:bg-[#246494] transition-colors`}>
-                    {buttonText}
-                </button>
-            </form>
         </div>
-        <div className="bg-gray-50 p-6 border-t mt-auto">
-            <h4 className="font-bold text-gray-700 mb-2">{title} Preview</h4>
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
-                {previewData.map(item => (
-                    <div key={item.label} className="flex items-center gap-2">
-                        {item.icon}
-                        <span>{item.label}: <span className="font-semibold">{item.value}</span></span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    </div>
-);
+    );
+};
 
 
 // --- Main Portals section component ---
-const Portals = () => (
-    <section id="portals" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold text-gray-800">A Centralized Hub for Education</h2>
-                <p className="text-lg text-gray-600 mt-4">One platform, multiple gateways. Secure access for every stakeholder.</p>
+const Portals = () => {
+    const navigate = useNavigate();
+
+    const handleStudentLogin = () => {
+        navigate('/student');
+    };
+
+    const handleAdminLogin = () => {
+        // For now, just show an alert. You can implement admin routing later
+        alert('Admin portal coming soon!');
+    };
+
+    const handleGovernmentLogin = () => {
+        // For now, just show an alert. You can implement government routing later
+        alert('Government portal coming soon!');
+    };
+
+    return (
+        <section id="portals" className="py-20 bg-gray-50">
+            <div className="container mx-auto px-6">
+                <div className="text-center mb-12">
+                    <h2 className="text-4xl font-bold text-gray-800">A Centralized Hub for Education</h2>
+                    <p className="text-lg text-gray-600 mt-4">One platform, multiple gateways. Secure access for every stakeholder.</p>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <PortalCard
+                        icon={<StudentIcon />}
+                        title="Student Portal"
+                        description="Access your personalized portfolio"
+                        buttonText="Login to Dashboard"
+                        buttonColor="bg-[#3081BB]"
+                        idPlaceholder="Student ID"
+                        passPlaceholder="Password"
+                        previewData={[
+                            { icon: <CgpaIcon />, label: 'CGPA', value: '8.5/10' },
+                        ]}
+                        onLogin={handleStudentLogin}
+                    />
+                    <PortalCard
+                        icon={<AdminIcon />}
+                        title="College Admin Portal"
+                        description="Manage institutional data"
+                        buttonText="Access Admin Panel"
+                        buttonColor="bg-[#3081BB]"
+                        idPlaceholder="Admin ID"
+                        passPlaceholder="Password"
+                        previewData={[
+                            { icon: <TotalStudentsIcon />, label: 'Students', value: '12,450' },
+                        ]}
+                        onLogin={handleAdminLogin}
+                    />
+                    <PortalCard
+                        icon={<GovernmentIcon />}
+                        title="Government Portal"
+                        description="National education oversight"
+                        buttonText="Access Portal"
+                        buttonColor="bg-[#3081BB]"
+                        idPlaceholder="Official ID"
+                        passPlaceholder="Secure Password"
+                        previewData={[
+                            { icon: <UniversitiesIcon />, label: 'Universities', value: '2,500' },
+                        ]}
+                        onLogin={handleGovernmentLogin}
+                    />
+                </div>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <PortalCard
-                    icon={<StudentIcon />}
-                    title="Student Portal"
-                    description="Access your personalized portfolio"
-                    buttonText="Login to Dashboard"
-                    buttonColor="bg-[#3081BB]"
-                    idPlaceholder="Student ID"
-                    passPlaceholder="Password"
-                    previewData={[
-                        { icon: <CgpaIcon />, label: 'CGPA', value: '8.5/10' },
-                    ]}
-                />
-                <PortalCard
-                    icon={<AdminIcon />}
-                    title="College Admin Portal"
-                    description="Manage institutional data"
-                    buttonText="Access Admin Panel"
-                    buttonColor="bg-[#3081BB]"
-                    idPlaceholder="Admin ID"
-                    passPlaceholder="Password"
-                    previewData={[
-                        { icon: <TotalStudentsIcon />, label: 'Students', value: '12,450' },
-                    ]}
-                />
-                <PortalCard
-                    icon={<GovernmentIcon />}
-                    title="Government Portal"
-                    description="National education oversight"
-                    buttonText="Access Portal"
-                    buttonColor="bg-[#3081BB]"
-                    idPlaceholder="Official ID"
-                    passPlaceholder="Secure Password"
-                    previewData={[
-                        { icon: <UniversitiesIcon />, label: 'Universities', value: '2,500' },
-                    ]}
-                />
-            </div>
-        </div>
-    </section>
-);
+        </section>
+    );
+};
 
 export default Portals;
 
