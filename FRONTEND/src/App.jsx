@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import StudentDashboard from "./pages/StudentDashboard";
 import SignupPage from "./pages/SignupPage";
+import Government from "./pages/Government";
 
 // New Admin Dashboard Imports with explicit file extensions for clarity
 import AdminLayout from "./layouts/admin/AdminLayout.jsx";
@@ -20,6 +21,14 @@ const App = () => {
       {/* Landing, Student, and Signup routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/student/*" element={<StudentDashboard />} />
+<<<<<<< HEAD
+=======
+
+      {/* Government page */}
+      <Route path="/government" element={<Government />} />
+
+      {/* Signup page */}
+>>>>>>> 6d33f89df99177274df93df8de28bd05de5649eb
       <Route path="/signup" element={<SignupPage />} />
 
       {/* New Admin Dashboard Routes */}
