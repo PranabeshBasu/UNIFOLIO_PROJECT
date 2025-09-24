@@ -1,5 +1,3 @@
-// src/lib/faculty/mockData.js
-
 // In a real application, this data would come from an API.
 
 export const mockApprovals = [
@@ -27,14 +25,6 @@ export const mockApprovals = [
     date: "2025-09-20",
     fileUrl: "#",
   },
-  {
-    id: 4,
-    student: "Diana Prince",
-    type: "Certificate",
-    item: "Certified Kubernetes Administrator",
-    date: "2025-09-19",
-    fileUrl: "#",
-  },
 ];
 
 export const mockStudents = [
@@ -58,12 +48,5 @@ export const mockStudents = [
     department: "Computer Science",
     year: 4,
     cgpa: 3.9,
-  },
-  {
-    id: "S004",
-    name: "Diana Prince",
-    department: "Mechanical Engineering",
-    year: 2,
-    cgpa: 3.7,
   },
 ];
