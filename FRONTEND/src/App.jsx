@@ -7,7 +7,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import SignupPage from "./pages/SignupPage";
 import Government from "./pages/Government";
 
-// New Admin Dashboard Imports with explicit file extensions for clarity
+// New Admin Dashboard Imports
 import AdminLayout from "./layouts/admin/AdminLayout.jsx";
 import AdminDashboardHome from "./pages/admin/AdminDashboardHome.jsx";
 import ApprovalPanel from "./pages/admin/ApprovalPanel.jsx";
@@ -18,21 +18,15 @@ import Analytics from "./pages/admin/Analytics.jsx";
 const App = () => {
   return (
     <Routes>
-      {/* Landing, Student, and Signup routes */}
+      {/* --- Main Application Routes --- */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/student/*" element={<StudentDashboard />} />
-<<<<<<< HEAD
-=======
-
-      {/* Government page */}
       <Route path="/government" element={<Government />} />
-
-      {/* Signup page */}
->>>>>>> 6d33f89df99177274df93df8de28bd05de5649eb
       <Route path="/signup" element={<SignupPage />} />
 
-      {/* New Admin Dashboard Routes */}
+      {/* --- New Admin Dashboard Routes --- */}
       <Route path="/admin" element={<AdminLayout />}>
+        {/* Redirects /admin to /admin/dashboard */}
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboardHome />} />
         <Route path="approvals" element={<ApprovalPanel />} />
@@ -41,7 +35,8 @@ const App = () => {
         <Route path="analytics" element={<Analytics />} />
       </Route>
 
-      {/* Redirect unknown paths to landing page */}
+      {/* --- Catch-all Redirect --- */}
+      {/* Redirects any unknown paths to the main landing page */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
