@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiPost } from "../../lib/api";
 
 // --- SVG Icons (Size adjusted) ---
 const StudentIcon = () => (
@@ -24,7 +25,6 @@ const GovernmentIcon = () => (
   </svg>
 );
 
-
 // --- Small Preview Icons ---
 const CgpaIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -44,16 +44,28 @@ const UniversitiesIcon = () => (
 
 // --- Reusable PortalCard ---
 const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlaceholder, passPlaceholder, previewData, onLogin }) => {
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onLogin) onLogin();
+    setError("");
+    if (onLogin) {
+      try {
+        setLoading(true);
+        await onLogin({ email, password, setError });
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full transition-shadow duration-300 hover:shadow-2xl hover:shadow-blue-300/40">
-      {/* Content section grows and is centered */}
-      <div className="p-8 flex-1 flex flex-col text-center"> {/* Centered content */}
-        <div className="flex flex-col items-center gap-4 mb-6"> {/* Centered icon and text block */}
+      <div className="p-8 flex-1 flex flex-col text-center">
+        <div className="flex flex-col items-center gap-4 mb-6">
           {icon}
           <div>
             <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
@@ -61,15 +73,14 @@ const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlace
           </div>
         </div>
         <form className="space-y-4 mt-auto" onSubmit={handleSubmit}>
-          <input type="text" placeholder={idPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
-          <input type="password" placeholder={passPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
-          <button type="submit" className={`${buttonColor} w-full text-white py-3 rounded-lg font-bold text-lg hover:bg-[#246494] transition-colors`}>
-            {buttonText}
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="text" placeholder={idPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
+          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder={passPlaceholder} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3081BB]" />
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <button type="submit" disabled={loading} className={`${buttonColor} w-full text-white py-3 rounded-lg font-bold text-lg hover:bg-[#246494] transition-colors`}>
+            {loading ? "Signing in..." : buttonText}
           </button>
         </form>
       </div>
-
-      {/* Preview always at bottom */}
       <div className="bg-gray-50 p-6 border-t">
         <h4 className="font-bold text-gray-700 mb-3">{title} Preview</h4>
         <div className="flex flex-wrap gap-4 text-sm text-gray-600">
@@ -91,14 +102,23 @@ const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlace
 const Portals = () => {
   const navigate = useNavigate();
 
+  const loginAndGo = async ({ email, password, role, setError }) => {
+    try {
+      const { token } = await apiPost("/api/auth/login", { email, password, role });
+      localStorage.setItem("unifolio_token", token);
+      localStorage.setItem("unifolio_role", role);
+      navigate(role === "student" ? "/student" : "/faculty");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <section id="portals" className="py-20 bg-gray-50">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800">A Centralized Hub for Education</h2>
-          <p className="text-lg text-gray-600 mt-4">
-            One platform, multiple gateways. Secure access for every stakeholder.
-          </p>
+          <p className="text-lg text-gray-600 mt-4">One platform, multiple gateways. Secure access for every stakeholder.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           <PortalCard
@@ -110,18 +130,18 @@ const Portals = () => {
             idPlaceholder="Student Mail ID"
             passPlaceholder="Password"
             previewData={[{ icon: <CgpaIcon />, label: "CGPA", value: "8.5/10" }]}
-            onLogin={() => navigate("/student")}
+            onLogin={({ email, password, setError }) => loginAndGo({ email, password, role: "student", setError })}
           />
           <PortalCard
             icon={<AdminIcon />}
-            title="College Admin Portal"
+            title="Faculty Portal"
             description="Manage institutional data"
-            buttonText="Access Admin Panel"
+            buttonText="Enter Faculty Dashboard"
             buttonColor="bg-[#3081BB]"
-            idPlaceholder="Admin Mail ID"
+            idPlaceholder="Faculty Mail ID"
             passPlaceholder="Password"
             previewData={[{ icon: <TotalStudentsIcon />, label: "Students", value: "12,450" }]}
-            onLogin={() => alert("Admin portal coming soon!")}
+            onLogin={({ email, password, setError }) => loginAndGo({ email, password, role: "faculty", setError })}
           />
           <PortalCard
             icon={<GovernmentIcon />}

@@ -9,6 +9,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 
 // Signup page (from your branch)
 import SignupPage from "./pages/SignupPage";
+import Government from "./pages/Government";
 
 // Faculty pages (from your collaborator's branch)
 import FacultyDashboardLayout from "./layouts/faculty/FacultyDashboardLayout";
@@ -26,6 +27,9 @@ const App = () => {
 
       {/* Student dashboard */}
       <Route path="/student/*" element={<StudentDashboard />} />
+
+      {/* Government page */}
+      <Route path="/government" element={<Government />} />
 
       {/* Signup page */}
       <Route path="/signup" element={<SignupPage />} />
