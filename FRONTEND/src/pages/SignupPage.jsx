@@ -50,13 +50,19 @@ const SignupPage = () => {
       }}
     >
       {/* Increased opacity for the overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div> {/* ✨ Change is here */}
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
-      {/* Form Card */}
-      <div className="relative bg-white shadow-xl rounded-2xl p-8 max-w-md w-full z-10 shadow-gray-400">
-        <h1 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Sign Up
+      {/* Form Card with hover effect */}
+      <div className="relative bg-white rounded-2xl p-8 max-w-md w-full z-10 transition-shadow duration-300 hover:shadow-2xl hover:shadow-blue-300/50">
+        
+        {/* Unifolio Text */}
+        <h1 className="text-5xl font-bold text-center text-blue-600 mb-4">
+          Unifolio
         </h1>
+
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+          Sign Up
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
           <div>
@@ -145,3 +151,4 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+

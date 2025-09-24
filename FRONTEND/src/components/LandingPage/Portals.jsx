@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// --- SVG Icons (same as before) ---
+// --- SVG Icons (Size adjusted) ---
 const StudentIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white bg-[#0182DF] p-2 rounded-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2L2 7l10 5 10-5-10-5z" />
@@ -16,12 +16,14 @@ const AdminIcon = () => (
     <line x1="12" y1="2" x2="12" y2="15" />
   </svg>
 );
+
+// --- Government Icon (Updated) ---
 const GovernmentIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white bg-[#0182DF] p-2 rounded-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
-    <circle cx="12" cy="10" r="3" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white bg-[#0182DF] p-2 rounded-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
   </svg>
 );
+
 
 // --- Small Preview Icons ---
 const CgpaIcon = () => (
@@ -48,10 +50,10 @@ const PortalCard = ({ icon, title, description, buttonText, buttonColor, idPlace
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full transition-shadow duration-300 hover:shadow-xl">
-      {/* Content section grows */}
-      <div className="p-8 flex-1 flex flex-col">
-        <div className="flex items-center gap-4 mb-6">
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col h-full transition-shadow duration-300 hover:shadow-2xl hover:shadow-blue-300/40">
+      {/* Content section grows and is centered */}
+      <div className="p-8 flex-1 flex flex-col text-center"> {/* Centered content */}
+        <div className="flex flex-col items-center gap-4 mb-6"> {/* Centered icon and text block */}
           {icon}
           <div>
             <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
@@ -139,3 +141,4 @@ const Portals = () => {
 };
 
 export default Portals;
+
