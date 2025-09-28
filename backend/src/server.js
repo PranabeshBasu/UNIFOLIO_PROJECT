@@ -6,6 +6,13 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
+app.get('/',(req,res)=>{
+  res.send({
+    activeStatus:true,
+    error:false,
+  })
+})
+
 async function start() {
   try {
     await connectToDatabase(process.env.MONGODB_URI);
