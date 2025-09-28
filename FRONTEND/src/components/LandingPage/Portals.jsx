@@ -173,7 +173,7 @@ const Portals = () => {
             passPlaceholder="Password"
             previewData={[{ icon: <TotalStudentsIcon />, label: "Students", value: "12,450" }]}
             onLogin={({ email, password, setError }) => loginAndGo({ email, password, role: "faculty", setError })}
-            dummyCredentials={{ email: "prajakta700@gmail.com", password: "2009" }}
+            dummyCredentials={{ email: "prajakta77@gmail.com", password: "2009" }}
           />
 
           <PortalCard
