@@ -5,11 +5,7 @@ import { apiPost } from "../lib/api";
 
 const SignupPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    role: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "", role: "" });
   const [errors, setErrors] = useState({ email: "" });
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState("form"); // form | otp
@@ -37,15 +33,17 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerMsg("");
+    const role = normalizedRole(formData.role);
+
     if (!emailRegex.test(formData.email)) {
       setErrors((prev) => ({ ...prev, email: "Invalid email format" }));
       return;
     }
-    const role = normalizedRole(formData.role);
     if (!role || (role !== "student" && role !== "faculty")) {
       setServerMsg("Please select Student or Faculty");
       return;
     }
+
     try {
       setLoading(true);
       const resp = await apiPost("/api/auth/signup", {
@@ -53,7 +51,7 @@ const SignupPage = () => {
         password: formData.password,
         role,
       });
-      if (resp?.devOtp) setOtp(resp.devOtp);
+      if (resp?.devOtp) setOtp(resp.devOtp); // prefill in dev
       setStep("otp");
     } catch (err) {
       setServerMsg(err.message);
@@ -66,6 +64,7 @@ const SignupPage = () => {
     e.preventDefault();
     setServerMsg("");
     const role = normalizedRole(formData.role);
+
     try {
       setLoading(true);
       await apiPost("/api/auth/verify-otp", {
@@ -81,7 +80,9 @@ const SignupPage = () => {
       });
       localStorage.setItem("unifolio_token", token);
       localStorage.setItem("unifolio_role", role);
-      navigate(role === "student" ? "/student" : "/faculty");
+
+      // ✅ Redirect after signup
+      navigate(role === "student" ? "/student" : "/admin/dashboard");
     } catch (err) {
       setServerMsg(err.message);
     } finally {
@@ -104,23 +105,51 @@ const SignupPage = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-gray-700 font-medium mb-1">Email Address</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="Enter your email" className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${errors.email ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-blue-500"}`} />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Enter your email"
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
+                  errors.email ? "border-red-500 focus:ring-red-400" : "border-gray-300 focus:ring-blue-500"
+                }`}
+              />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1">Password</label>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Enter your password" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
             </div>
             <div>
               <label className="block text-gray-700 font-medium mb-1">Role</label>
-              <select name="role" value={formData.role} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              >
                 <option value="" disabled>Select Your Role</option>
                 <option value="Student">Student</option>
                 <option value="Faculty">Faculty</option>
                 <option value="Institution">Institution</option>
               </select>
             </div>
-            <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
               {loading ? "Sending OTP..." : "Create Account"}
             </button>
           </form>
@@ -128,10 +157,20 @@ const SignupPage = () => {
           <form onSubmit={handleVerify} className="space-y-5">
             <div>
               <label className="block text-gray-700 font-medium mb-1">Enter OTP</label>
-              <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="6-digit OTP" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="6-digit OTP"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
               <p className="text-xs text-gray-500 mt-1">Check email for OTP. In dev, it may be prefilled.</p>
             </div>
-            <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
               {loading ? "Verifying..." : "Verify & Continue"}
             </button>
           </form>
@@ -142,4 +181,3 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
-
